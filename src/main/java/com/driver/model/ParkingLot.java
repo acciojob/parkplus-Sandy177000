@@ -1,29 +1,26 @@
+
 package com.driver.model;
 
-import org.hibernate.annotations.Generated;
-
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
-
 @Entity
+@Table(name="parking_Lot")
 public class ParkingLot {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-    String name;
-    String address;
+    private String name;
 
-    @OneToMany(mappedBy = "ParkingLot")
-    List<Spot> spotList;
+    private String address;
 
     public ParkingLot(String name, String address) {
         this.name = name;
         this.address = address;
     }
-
 
     public ParkingLot() {
     }
@@ -59,4 +56,8 @@ public class ParkingLot {
     public void setSpotList(List<Spot> spotList) {
         this.spotList = spotList;
     }
+
+    @OneToMany(mappedBy = "parkingLot", cascade = CascadeType.ALL)
+    private List<Spot> spotList= new ArrayList<>();
+
 }
