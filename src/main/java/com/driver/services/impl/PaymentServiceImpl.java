@@ -1,6 +1,9 @@
 package com.driver.services.impl;
 
+import com.driver.model.Payment;
 import com.driver.model.PaymentMode;
+import com.driver.model.Reservation;
+import com.driver.model.Spot;
 import com.driver.repository.PaymentRepository;
 import com.driver.repository.ReservationRepository;
 import com.driver.services.PaymentService;
@@ -16,6 +19,32 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Payment pay(Integer reservationId, int amountSent, String mode) throws Exception {
+
+        Reservation reservation = reservationRepository2.findById(reservationId).get();
+
+        int bill  = (reservation.getSpot().getPricePerHour())*(reservation.getNumberOfHours());
+
+        if(amountSent<bill){
+            throw new Exception("Insufficient Amount");
+        }
+
+        Payment payment = null;
+        switch (mode.toLowerCase()) {
+            case "card":
+                payment = new Payment(true, PaymentMode.CARD, reservation);
+                break;
+            case "cash":
+                payment = new Payment(true, PaymentMode.CASH, reservation);
+                break;
+            case "upi":
+                payment = new Payment(true, PaymentMode.UPI, reservation);
+                break;
+            default:
+                throw new Exception("Payment mode not detected");
+        }
+
+        return payment;
+
 
     }
 }
